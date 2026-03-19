@@ -34,69 +34,6 @@ public class ChargeMovementBehaviour implements MovementBehaviour {
     public static boolean registered = false;
 
     /**
-     * 每tick调用一次，在移动过程中根据当前方块类型（磁铁/金属）执行不同的充电逻辑。
-     *
-     * @param context 移动上下文对象，包含世界、位置、状态等信息
-     */
-    @Override
-    public void tick(MovementContext context) {
-        Level level = context.world;
-        double speed = context.motion.length();
-        BlockPos blockPos = BlockPos.containing(context.position);
-        ChargeCollectorManager instance = ChargeCollectorManager.getInstance(level);
-
-        // 根据方块是否是磁铁决定使用哪种tick方法
-        if (context.state.is(ModBlocks.MAGNET_BLOCK.get())) {
-            magnetTick(instance, level, blockPos, speed);
-        } else {
-            metalTick(instance, level, blockPos, speed);
-        }
-    }
-
-    /**
-     * 处理磁铁方块移动时对其周围金属方块进行充能的操作。
-     *
-     * @param manager  充电管理器实例
-     * @param level    当前所在的世界
-     * @param blockPos 当前方块的位置
-     * @param speed    方块移动的速度大小
-     */
-    public void magnetTick(ChargeCollectorManager manager, Level level, BlockPos blockPos, double speed) {
-        // 遍历六个方向查找相邻的金属方块并为其充能
-        for (Direction direction : Direction.values()) {
-            BlockPos offsetPos = blockPos.relative(direction);
-            BlockState offsetState = level.getBlockState(offsetPos);
-            if (!ChargeMovementBehaviour.isMetal(offsetState)) {
-                continue;
-            }
-            double surplus = AnvilCraftCreateAddition.CONFIG.chargeGeneratedEfficiency * speed;
-            manager.charge(surplus, offsetPos);
-        }
-    }
-
-    /**
-     * 处理金属方块移动时向最近的集电器传输能量的过程。
-     *
-     * @param manager  充电管理器实例
-     * @param level    当前所在的世界
-     * @param blockPos 当前方块的位置
-     * @param speed    方块移动的速度大小
-     */
-    public void metalTick(ChargeCollectorManager manager, Level level, BlockPos blockPos, double speed) {
-        // 遍历六个方向寻找相邻的磁铁方块，并将产生的电量传递给附近的集电器
-        int magnetCount = 0;
-        for (Direction direction : Direction.values()) {
-            BlockPos offsetPos = blockPos.relative(direction);
-            BlockState offsetState = level.getBlockState(offsetPos);
-            if (offsetState.is(ModBlockTags.MAGNET)) {
-                magnetCount++;
-            }
-        }
-        double surplus = AnvilCraftCreateAddition.CONFIG.chargeGeneratedEfficiency * speed * magnetCount;
-        manager.charge(surplus, blockPos);
-    }
-
-    /**
      * 在服务器加载完成事件触发时注册所有符合条件的方块以启用该移动行为。
      *
      * @param event ServerStartedEvent 服务器加载完成事件
@@ -218,5 +155,68 @@ public class ChargeMovementBehaviour implements MovementBehaviour {
             }
         }
         return coefficient * AnvilCraftCreateAddition.CONFIG.stressDissipationCoefficient;
+    }
+
+    /**
+     * 每tick调用一次，在移动过程中根据当前方块类型（磁铁/金属）执行不同的充电逻辑。
+     *
+     * @param context 移动上下文对象，包含世界、位置、状态等信息
+     */
+    @Override
+    public void tick(MovementContext context) {
+        Level level = context.world;
+        double speed = context.motion.length();
+        BlockPos blockPos = BlockPos.containing(context.position);
+        ChargeCollectorManager instance = ChargeCollectorManager.getInstance(level);
+
+        // 根据方块是否是磁铁决定使用哪种tick方法
+        if (context.state.is(ModBlocks.MAGNET_BLOCK.get())) {
+            magnetTick(instance, level, blockPos, speed);
+        } else {
+            metalTick(instance, level, blockPos, speed);
+        }
+    }
+
+    /**
+     * 处理磁铁方块移动时对其周围金属方块进行充能的操作。
+     *
+     * @param manager  充电管理器实例
+     * @param level    当前所在的世界
+     * @param blockPos 当前方块的位置
+     * @param speed    方块移动的速度大小
+     */
+    public void magnetTick(ChargeCollectorManager manager, Level level, BlockPos blockPos, double speed) {
+        // 遍历六个方向查找相邻的金属方块并为其充能
+        for (Direction direction : Direction.values()) {
+            BlockPos offsetPos = blockPos.relative(direction);
+            BlockState offsetState = level.getBlockState(offsetPos);
+            if (!ChargeMovementBehaviour.isMetal(offsetState)) {
+                continue;
+            }
+            double surplus = AnvilCraftCreateAddition.CONFIG.chargeGeneratedEfficiency * speed;
+            manager.charge(surplus, offsetPos);
+        }
+    }
+
+    /**
+     * 处理金属方块移动时向最近的集电器传输能量的过程。
+     *
+     * @param manager  充电管理器实例
+     * @param level    当前所在的世界
+     * @param blockPos 当前方块的位置
+     * @param speed    方块移动的速度大小
+     */
+    public void metalTick(ChargeCollectorManager manager, Level level, BlockPos blockPos, double speed) {
+        // 遍历六个方向寻找相邻的磁铁方块，并将产生的电量传递给附近的集电器
+        int magnetCount = 0;
+        for (Direction direction : Direction.values()) {
+            BlockPos offsetPos = blockPos.relative(direction);
+            BlockState offsetState = level.getBlockState(offsetPos);
+            if (offsetState.is(ModBlockTags.MAGNET)) {
+                magnetCount++;
+            }
+        }
+        double surplus = AnvilCraftCreateAddition.CONFIG.chargeGeneratedEfficiency * speed * magnetCount;
+        manager.charge(surplus, blockPos);
     }
 }

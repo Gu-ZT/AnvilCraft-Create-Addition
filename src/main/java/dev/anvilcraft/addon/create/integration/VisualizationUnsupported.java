@@ -68,9 +68,8 @@ public class VisualizationUnsupported extends Level {
         this.level = level;
     }
 
-    @Override
-    public long nextSubTickCount() {
-        return level.nextSubTickCount();
+    public static Level wrap(Level level) {
+        return new VisualizationUnsupported(level);
     }
 
     @Override
@@ -84,43 +83,53 @@ public class VisualizationUnsupported extends Level {
     }
 
     @Override
-    public LevelData getLevelData() {
-        return level.getLevelData();
+    public ChunkSource getChunkSource() {
+        return level.getChunkSource();
     }
 
     @Override
-    public TickRateManager tickRateManager() {
-        return level.tickRateManager();
+    public void levelEvent(@Nullable Player player, int type, BlockPos pos, int data) {
+        level.levelEvent(player, type, pos, data);
     }
 
     @Override
-    public @Nullable MapItemSavedData getMapData(MapId mapId) {
-        return level.getMapData(mapId);
+    public void gameEvent(Holder<GameEvent> gameEvent, Vec3 pos, GameEvent.Context context) {
+        level.gameEvent(gameEvent, pos, context);
     }
 
     @Override
-    public void setMapData(MapId mapId, MapItemSavedData mapData) {
-        level.setMapData(mapId, mapData);
+    public float getShade(Direction direction, boolean shade) {
+        return level.getShade(direction, shade);
     }
 
     @Override
-    public MapId getFreeMapId() {
-        return level.getFreeMapId();
+    public int getBrightness(LightLayer lightType, BlockPos blockPos) {
+        return 14;
     }
 
     @Override
-    public void destroyBlockProgress(int breakerId, BlockPos pos, int progress) {
-        level.destroyBlockProgress(breakerId, pos, progress);
+    public int getRawBrightness(BlockPos blockPos, int amount) {
+        return 14 - amount;
     }
 
     @Override
-    public Scoreboard getScoreboard() {
-        return level.getScoreboard();
+    public List<? extends Player> players() {
+        return level.players();
     }
 
     @Override
-    public DifficultyInstance getCurrentDifficultyAt(BlockPos pos) {
-        return level.getCurrentDifficultyAt(pos);
+    public Holder<Biome> getUncachedNoiseBiome(int x, int y, int z) {
+        return level.getUncachedNoiseBiome(x, y, z);
+    }
+
+    @Override
+    public FeatureFlagSet enabledFeatures() {
+        return level.enabledFeatures();
+    }
+
+    @Override
+    public boolean isClientSide() {
+        return level.isClientSide;
     }
 
     @Override
@@ -129,13 +138,48 @@ public class VisualizationUnsupported extends Level {
     }
 
     @Override
-    public ChunkSource getChunkSource() {
-        return level.getChunkSource();
+    public @Nullable ChunkAccess getChunk(int x, int z, ChunkStatus chunkStatus, boolean requireChunk) {
+        return level.getChunk(x, z, chunkStatus, requireChunk);
     }
 
     @Override
-    public RandomSource getRandom() {
-        return level.random;
+    public boolean setBlock(BlockPos pos, BlockState state, int flags, int recursionLeft) {
+        return level.setBlock(pos, state, flags, recursionLeft);
+    }
+
+    @Override
+    public boolean removeBlock(BlockPos pos, boolean isMoving) {
+        return level.removeBlock(pos, isMoving);
+    }
+
+    @Override
+    public boolean destroyBlock(BlockPos pos, boolean dropBlock, @Nullable Entity entity, int recursionLeft) {
+        return level.destroyBlock(pos, dropBlock, entity, recursionLeft);
+    }
+
+    @Override
+    public void sendBlockUpdated(BlockPos pos, BlockState oldState, BlockState newState, int flags) {
+        level.sendBlockUpdated(pos, oldState, newState, flags);
+    }
+
+    @Override
+    public int getHeight(Heightmap.Types heightmapType, int x, int z) {
+        return level.getHeight(heightmapType, x, z);
+    }
+
+    @Override
+    public LevelLightEngine getLightEngine() {
+        return level.getLightEngine();
+    }
+
+    @Override
+    public BlockState getBlockState(BlockPos pos) {
+        return level.getBlockState(pos);
+    }
+
+    @Override
+    public FluidState getFluidState(BlockPos pos) {
+        return level.getFluidState(pos);
     }
 
     @Override
@@ -182,48 +226,8 @@ public class VisualizationUnsupported extends Level {
     }
 
     @Override
-    public void levelEvent(@Nullable Player player, int type, BlockPos pos, int data) {
-        level.levelEvent(player, type, pos, data);
-    }
-
-    @Override
-    public void gameEvent(Holder<GameEvent> gameEvent, Vec3 pos, GameEvent.Context context) {
-        level.gameEvent(gameEvent, pos, context);
-    }
-
-    @Override
-    public float getShade(Direction direction, boolean shade) {
-        return level.getShade(direction, shade);
-    }
-
-    @Override
-    public LevelLightEngine getLightEngine() {
-        return level.getLightEngine();
-    }
-
-    @Override
-    public WorldBorder getWorldBorder() {
-        return level.getWorldBorder();
-    }
-
-    @Override
     public @Nullable BlockEntity getBlockEntity(BlockPos pos) {
         return level.getBlockEntity(pos);
-    }
-
-    @Override
-    public BlockState getBlockState(BlockPos pos) {
-        return level.getBlockState(pos);
-    }
-
-    @Override
-    public FluidState getFluidState(BlockPos pos) {
-        return level.getFluidState(pos);
-    }
-
-    @Override
-    public LevelEntityGetter<Entity> getEntities() {
-        return level.getEntities();
     }
 
     @Override
@@ -242,18 +246,48 @@ public class VisualizationUnsupported extends Level {
     }
 
     @Override
-    public List<? extends Player> players() {
-        return level.players();
+    public int getSeaLevel() {
+        return level.getSeaLevel();
     }
 
     @Override
-    public @Nullable ChunkAccess getChunk(int x, int z, ChunkStatus chunkStatus, boolean requireChunk) {
-        return level.getChunk(x, z, chunkStatus, requireChunk);
+    public LevelData getLevelData() {
+        return level.getLevelData();
     }
 
     @Override
-    public int getHeight(Heightmap.Types heightmapType, int x, int z) {
-        return level.getHeight(heightmapType, x, z);
+    public TickRateManager tickRateManager() {
+        return level.tickRateManager();
+    }
+
+    @Override
+    public @Nullable MapItemSavedData getMapData(MapId mapId) {
+        return level.getMapData(mapId);
+    }
+
+    @Override
+    public void setMapData(MapId mapId, MapItemSavedData mapData) {
+        level.setMapData(mapId, mapData);
+    }
+
+    @Override
+    public MapId getFreeMapId() {
+        return level.getFreeMapId();
+    }
+
+    @Override
+    public void destroyBlockProgress(int breakerId, BlockPos pos, int progress) {
+        level.destroyBlockProgress(breakerId, pos, progress);
+    }
+
+    @Override
+    public Scoreboard getScoreboard() {
+        return level.getScoreboard();
+    }
+
+    @Override
+    public DifficultyInstance getCurrentDifficultyAt(BlockPos pos) {
+        return level.getCurrentDifficultyAt(pos);
     }
 
     @Override
@@ -262,68 +296,35 @@ public class VisualizationUnsupported extends Level {
     }
 
     @Override
-    public BiomeManager getBiomeManager() {
-        return level.getBiomeManager();
-    }
-
-    @Override
-    public Holder<Biome> getUncachedNoiseBiome(int x, int y, int z) {
-        return level.getUncachedNoiseBiome(x, y, z);
-    }
-
-    @Override
-    public boolean isClientSide() {
-        return level.isClientSide;
-    }
-
-    @Override
-    public int getSeaLevel() {
-        return level.getSeaLevel();
-    }
-
-    @Override
-    public DimensionType dimensionType() {
-        return level.dimensionType();
-    }
-
-    @Override
-    public RegistryAccess registryAccess() {
-        return level.registryAccess();
-    }
-
-    @Override
-    public PotionBrewing potionBrewing() {
-        return level.potionBrewing();
-    }
-
-    @Override
+    public WorldBorder getWorldBorder() {
+        return level.getWorldBorder();
+    }    @Override
     public void setDayTimeFraction(float dayTimeFraction) {
         level.setDayTimeFraction(dayTimeFraction);
     }
 
     @Override
+    public DimensionType dimensionType() {
+        return level.dimensionType();
+    }    @Override
     public float getDayTimeFraction() {
         return level.getDayTimeFraction();
     }
 
     @Override
+    public RandomSource getRandom() {
+        return level.random;
+    }    @Override
     public float getDayTimePerTick() {
         return level.getDayTimePerTick();
     }
 
     @Override
-    public void setDayTimePerTick(float dayTimePerTick) {
-        level.setDayTimePerTick(dayTimePerTick);
-    }
-
-    @Override
-    public FeatureFlagSet enabledFeatures() {
-        return level.enabledFeatures();
-    }
-
-    @Override
     public boolean isStateAtPosition(BlockPos pos, Predicate<BlockState> state) {
         return level.isStateAtPosition(pos, state);
+    }    @Override
+    public void setDayTimePerTick(float dayTimePerTick) {
+        level.setDayTimePerTick(dayTimePerTick);
     }
 
     @Override
@@ -337,36 +338,35 @@ public class VisualizationUnsupported extends Level {
     }
 
     @Override
-    public boolean setBlock(BlockPos pos, BlockState state, int flags, int recursionLeft) {
-        return level.setBlock(pos, state, flags, recursionLeft);
+    public BiomeManager getBiomeManager() {
+        return level.getBiomeManager();
     }
 
     @Override
-    public boolean removeBlock(BlockPos pos, boolean isMoving) {
-        return level.removeBlock(pos, isMoving);
+    public LevelEntityGetter<Entity> getEntities() {
+        return level.getEntities();
     }
 
     @Override
-    public boolean destroyBlock(BlockPos pos, boolean dropBlock, @Nullable Entity entity, int recursionLeft) {
-        return level.destroyBlock(pos, dropBlock, entity, recursionLeft);
+    public long nextSubTickCount() {
+        return level.nextSubTickCount();
     }
 
     @Override
-    public void sendBlockUpdated(BlockPos pos, BlockState oldState, BlockState newState, int flags) {
-        level.sendBlockUpdated(pos, oldState, newState, flags);
+    public RegistryAccess registryAccess() {
+        return level.registryAccess();
     }
 
     @Override
-    public int getBrightness(LightLayer lightType, BlockPos blockPos) {
-        return 14;
+    public PotionBrewing potionBrewing() {
+        return level.potionBrewing();
     }
 
-    @Override
-    public int getRawBrightness(BlockPos blockPos, int amount) {
-        return 14 - amount;
-    }
 
-    public static Level wrap(Level level) {
-        return new VisualizationUnsupported(level);
-    }
+
+
+
+
+
+
 }

@@ -14,7 +14,10 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.Optional;
 
 public class AdditionAmuletTypes {
-    private static final DeferredRegister<AmuletType> REGISTER = DeferredRegister.create(ModRegistries.AMULET_TYPE_KEY, AnvilCraftCreateAddition.MOD_ID);
+    private static final DeferredRegister<AmuletType> REGISTER = DeferredRegister.create(
+        ModRegistries.AMULET_TYPE_KEY,
+        AnvilCraftCreateAddition.MOD_ID
+    );
 
     public static final DeferredHolder<AmuletType, ? extends AmuletType> COGWHEEL = REGISTER.register(
         "cogwheel", AmuletType.builder()

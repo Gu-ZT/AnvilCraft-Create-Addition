@@ -12,7 +12,8 @@ import static dev.anvilcraft.addon.create.AnvilCraftCreateAddition.REGISTRATE;
 @EventBusSubscriber(modid = AnvilCraftCreateAddition.MOD_ID)
 public class AdditionDatagen {
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {}
+    public static void gatherData(GatherDataEvent event) {
+    }
 
     /**
      * 初始化生成器

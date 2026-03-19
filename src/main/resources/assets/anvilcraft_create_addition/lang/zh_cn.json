@@ -1,0 +1,11 @@
+{
+  "anvilcraft_create_addition.configuration.charge_generated_efficiency": "电荷生成效率",
+  "anvilcraft_create_addition.configuration.charge_generated_efficiency.tooltip": "铜块和磁铁的相对线速度与所生成电荷量之间的比例",
+  "anvilcraft_create_addition.configuration.section.anvilcraft_create_addition.common.toml": "铁砧工艺：机动附加 通用配置",
+  "anvilcraft_create_addition.configuration.section.anvilcraft_create_addition.common.toml.title": "铁砧工艺：机动附加 通用配置",
+  "anvilcraft_create_addition.configuration.stress_dissipation_coefficient": "应力消散系数",
+  "anvilcraft_create_addition.configuration.stress_dissipation_coefficient.tooltip": "这个神秘的系数，可能与发电机所需的应力有关。",
+  "anvilcraft_create_addition.configuration.title": "铁砧工艺：机动附加 配置",
+  "item.anvilcraft_create_addition.cogwheel_amulet": "齿轮护符",
+  "itemGroup.anvilcraft_create_addition.addition_items": "铁砧工艺：机动附加"
+}

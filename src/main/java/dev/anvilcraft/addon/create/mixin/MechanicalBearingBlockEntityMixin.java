@@ -25,14 +25,6 @@ abstract class MechanicalBearingBlockEntityMixin extends GeneratingKineticBlockE
     implements IBearingBlockEntity, IDisplayAssemblyExceptions {
 
     /**
-     * 获取当前被该轴承带动的机械装置实体（由Mixin注入）。
-     *
-     * @return 被带动的机械装置实体，可能为null
-     */
-    @Shadow
-    public abstract @Nullable ControlledContraptionEntity getMovedContraption();
-
-    /**
      * 构造一个新的 {@code MechanicalBearingBlockEntityMixin} 实例。
      *
      * @param type  方块实体类型
@@ -46,6 +38,14 @@ abstract class MechanicalBearingBlockEntityMixin extends GeneratingKineticBlockE
     ) {
         super(type, pos, state);
     }
+
+    /**
+     * 获取当前被该轴承带动的机械装置实体（由Mixin注入）。
+     *
+     * @return 被带动的机械装置实体，可能为null
+     */
+    @Shadow
+    public abstract @Nullable ControlledContraptionEntity getMovedContraption();
 
     /**
      * 计算并返回施加到此轴承上的总应力值。
