@@ -27,7 +27,7 @@ public class AnvilCraftCreateAddition {
         AnvilCraftCreateAddition.MOD_ID,
         AnvilCraftCreateAdditionConfig::new
     );
-    public static final Registrate REGISTRATE = Registrate.create(MOD_ID);
+    public static final Registrate REGISTRATE = Registrate.create(AnvilCraftCreateAddition.MOD_ID);
 
     public AnvilCraftCreateAddition(IEventBus modEventBus, ModContainer modContainer) {
         AdditionItemGroups.register(modEventBus);
